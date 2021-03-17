@@ -41,12 +41,10 @@ public class Vlog implements Serializable
     private String content;
 
     @Column(name = "likes")
-    @Value("0")
-    private Integer likes;
+    private Integer likes=0;
 
     @Column(name = "dislikes")
-    @Value("0")
-    private Integer dislikes;
+    private Integer dislikes=0;
 
     @Column(name ="created_at")
     private Date createdAt;

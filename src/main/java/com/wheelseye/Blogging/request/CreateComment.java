@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import java.util.Date;
 
 @Data
-public class CreateCommentRequest {
+public class CreateComment {
     private Integer cmtId;
     private Date createdAt;
     private Integer authorId;

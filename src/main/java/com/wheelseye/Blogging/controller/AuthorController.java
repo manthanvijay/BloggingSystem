@@ -2,8 +2,11 @@ package com.wheelseye.Blogging.controller;
 
 import java.util.List;
 import com.wheelseye.Blogging.Entity.Author;
+import com.wheelseye.Blogging.Entity.Comment;
 import com.wheelseye.Blogging.Entity.Vlog;
 import com.wheelseye.Blogging.dto.AuthorDTO;
+import com.wheelseye.Blogging.dto.CommentDTO;
+import com.wheelseye.Blogging.dto.VlogDTO;
 import com.wheelseye.Blogging.request.ChangePassword;
 import com.wheelseye.Blogging.request.SignUp;
 import com.wheelseye.Blogging.service.AuthorService;
@@ -26,11 +29,16 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}/vlogs")
-    private List<Vlog> getMyVlog(@PathVariable("id") Integer id){
-        return authorService.getMyVlog(id);
+    private List<VlogDTO> getMyVlogs(@PathVariable("id") Integer id) throws Exception {
+        return authorService.getMyVlogs(id);
     }
 
-    @PutMapping("/{id}/passwd")
+    @GetMapping("/{id}/comments")
+    private List<CommentDTO> getMyComments(@PathVariable("id") Integer id) throws Exception {
+        return authorService.getMyComments(id);
+    }
+
+    @PutMapping("/{id}/password")
     private AuthorDTO updatePassword(@PathVariable("id") Integer id, @RequestBody ChangePassword updatePass) throws Exception {
         return authorService.updatePassword(id,updatePass);
     }

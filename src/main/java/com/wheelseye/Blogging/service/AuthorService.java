@@ -3,7 +3,12 @@ package com.wheelseye.Blogging.service;
 import com.wheelseye.Blogging.Entity.Author;
 import com.wheelseye.Blogging.Entity.Vlog;
 import com.wheelseye.Blogging.converter.AuthorConverter;
+import com.wheelseye.Blogging.converter.CommentConverter;
+import com.wheelseye.Blogging.converter.VlogConverter;
 import com.wheelseye.Blogging.dto.AuthorDTO;
+import com.wheelseye.Blogging.dto.CommentDTO;
+import com.wheelseye.Blogging.dto.VlogDTO;
+import com.wheelseye.Blogging.repo.CommentRepository;
 import com.wheelseye.Blogging.repo.VlogRepository;
 import com.wheelseye.Blogging.request.ChangePassword;
 import com.wheelseye.Blogging.request.Login;
@@ -22,6 +27,9 @@ public class AuthorService {
 
     @Autowired
     private VlogRepository vlogRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     public AuthorDTO create(SignUp request){
         Author author = new Author();
@@ -71,7 +79,17 @@ public class AuthorService {
         return AuthorConverter.convertor(authorRepository.save(author));
     }
 
-    public List<Vlog> getMyVlog(Integer id){
-        return vlogRepository.findByAuthorId(id);
+    public List<VlogDTO> getMyVlogs(Integer id) throws Exception {
+        Author author = authorRepository.findByAuthorId(id);
+        if(author==null)
+            throw new Exception("User not found");
+        return vlogRepository.findByAuthorId(id).stream().map(VlogConverter::converter).collect(Collectors.toList());
+    }
+
+    public List<CommentDTO> getMyComments(Integer id) throws Exception {
+        Author author = authorRepository.findByAuthorId(id);
+        if(author==null)
+            throw new Exception("User not found");
+        return commentRepository.findByAuthorId(id).stream().map(CommentConverter::converter).collect(Collectors.toList());
     }
 }

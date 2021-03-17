@@ -1,8 +1,8 @@
 package com.wheelseye.Blogging.controller;
 
-import com.wheelseye.Blogging.Entity.Comment;
-import com.wheelseye.Blogging.Entity.Vlog;
-import com.wheelseye.Blogging.request.CreateVlogRequest;
+import com.wheelseye.Blogging.dto.CommentDTO;
+import com.wheelseye.Blogging.dto.VlogDTO;
+import com.wheelseye.Blogging.request.CreateVlog;
 import com.wheelseye.Blogging.service.VlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,32 +16,36 @@ public class VlogController {
     private VlogService vlogService;
 
     @GetMapping("")
-    private List<Vlog> getAllVlogs(){ return vlogService.getAllVlogs(); }
+    private List<VlogDTO> getAllVlogs(){ return vlogService.getAllVlogs(); }
 
     @PostMapping("")
-    private Vlog createVlog(@RequestBody CreateVlogRequest request) throws Exception {
+    private VlogDTO createVlog(@RequestBody CreateVlog request) throws Exception {
         return vlogService.createVlog(request);
     }
 
     @GetMapping("/{id}/comments")
-    private List<Comment> getMyComment(@PathVariable("id") Integer id){
+    private List<CommentDTO> getMyComment(@PathVariable("id") Integer id) throws Exception {
         return vlogService.getMyComment(id);
     }
 
-
     @PutMapping("/{id}/updatevlog")
-    private Vlog updateVlog(@PathVariable("id") Integer id, @RequestBody CreateVlogRequest request) throws Exception {
+    private VlogDTO updateVlog(@PathVariable("id") Integer id, @RequestBody CreateVlog request) throws Exception {
         return vlogService.updateVlog(id,request);
     }
 
-
-   /* @PostMapping("/{id}/likes")
-    private Vlog likeDislike(@PathVariable("id") Integer id , @RequestBody )
-*/
     @GetMapping("/search")
-    private List<Vlog> findVlogByTags(@RequestParam(value = "tags") List<String> searchTag){
+    private List<VlogDTO> findVlogByTags(@RequestParam(value = "tags") List<String> searchTag){
         return vlogService.findVlogByTags(searchTag);
     }
 
+    @PostMapping("/{id}/likes")
+    private VlogDTO like(@PathVariable("id") Integer id) throws Exception {
+        return vlogService.like(id);
+    }
+
+    @PostMapping("/{id}/dislikes")
+    private VlogDTO disLike(@PathVariable("id") Integer id) throws Exception {
+        return vlogService.disLike(id);
+    }
 }
 
