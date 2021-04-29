@@ -13,38 +13,38 @@ import com.wheelseye.Blogging.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController    //combination of @Conntroller and @ResponseBody
 @RequestMapping("/author")
 public class AuthorController {
 
-    @Autowired
+    @Autowired           //creating a singleton class and object.
     private AuthorService authorService;
 
     @GetMapping("")           //when you want to see all the users
-    private List<AuthorDTO> getAllAuthors() { return authorService.getAllAuthors(); }
+    public List<AuthorDTO> getAllAuthors() { return authorService.getAllAuthors(); }
 
-    @GetMapping("/{id}")  //getting author details
-    private AuthorDTO findById(@PathVariable("id") Integer id){
+    @GetMapping("/{id}")  //getting particular author details
+    public AuthorDTO findById(@PathVariable("id") Integer id){
         return authorService.findById(id);
     }
 
-    @GetMapping("/{id}/vlogs")
-    private List<VlogDTO> getMyVlogs(@PathVariable("id") Integer id) throws Exception {
+    @GetMapping("/{id}/vlogs")    //getting all the vlogs of a author
+    public List<VlogDTO> getMyVlogs(@PathVariable("id") Integer id) throws Exception {
         return authorService.getMyVlogs(id);
     }
 
-    @GetMapping("/{id}/comments")
-    private List<CommentDTO> getMyComments(@PathVariable("id") Integer id) throws Exception {
+    @GetMapping("/{id}/comments")    //getting all the comments of a author
+    public List<CommentDTO> getMyComments(@PathVariable("id") Integer id) throws Exception {
         return authorService.getMyComments(id);
     }
 
-    @PutMapping("/{id}/password")
-    private AuthorDTO updatePassword(@PathVariable("id") Integer id, @RequestBody ChangePassword updatePass) throws Exception {
+    @PutMapping("/{id}/password")    //password change
+    public AuthorDTO updatePassword(@PathVariable("id") Integer id, @RequestBody ChangePassword updatePass) throws Exception {
         return authorService.updatePassword(id,updatePass);
     }
 
-    @PutMapping("/{id}/updatedetails")
-    private AuthorDTO updatePersonalInfo(@PathVariable("id") Integer id, @RequestBody SignUp updatereq) throws Exception {
+    @PutMapping("/{id}/updatedetails")   // personal details change
+    public AuthorDTO updatePersonalInfo(@PathVariable("id") Integer id, @RequestBody SignUp updatereq) throws Exception {
         return authorService.updatePersonalInfo(id,updatereq);
     }
 

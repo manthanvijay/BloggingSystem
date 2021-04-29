@@ -31,11 +31,19 @@ public class AuthorService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public AuthorDTO create(SignUp request){
+    public AuthorDTO create(SignUp request) throws Exception {
+        Author findauthor = authorRepository.findByEmail(request.getEmail());
+        if(findauthor!=null)
+            throw new Exception("EmailId already registered");
         Author author = new Author();
         author.setName(request.getName());
         author.setDept(request.getDept());
         author.setEmail(request.getEmail());
+        String pass = request.getPassword();
+        if(pass.length()<8)
+            throw new Exception("Password too short");
+        if(!pass.matches("^[a-zA-Z0-9$&+,:;=?@#|'<>.^*()%!-]*$"))
+            throw new Exception("Password can include alphabets,numerals or special characters only");
         author.setPassword(request.getPassword());
         return AuthorConverter.convertor(authorRepository.save(author));
     }
@@ -63,6 +71,11 @@ public class AuthorService {
             throw new Exception("User doesn't exists");
         if(!(author.getPassword().equals(updatePass.getOldPassword())))
             throw new Exception("Old Password incorrect");
+        if(updatePass.getOldPassword().equals(updatePass.getNewPassword()))
+            throw new Exception("Old and new password can't be same");
+        String pass = updatePass.getNewPassword();
+        if(!pass.matches("^[a-zA-Z0-9$&+,:;=?@#|'<>.^*()%!-]*$"))
+            throw new Exception("Password can include alphabets,numerals or special characters only");
         author.setPassword(updatePass.getNewPassword());
         System.out.println("Password updated successfully");
         return AuthorConverter.convertor(authorRepository.save(author));
@@ -83,13 +96,13 @@ public class AuthorService {
         Author author = authorRepository.findByAuthorId(id);
         if(author==null)
             throw new Exception("User not found");
-        return vlogRepository.findByAuthorId(id).stream().map(VlogConverter::converter).collect(Collectors.toList());
+        return vlogRepository.findByAuthorIdOrderByCreatedAtDesc(id).stream().map(VlogConverter::converter).collect(Collectors.toList());
     }
 
     public List<CommentDTO> getMyComments(Integer id) throws Exception {
         Author author = authorRepository.findByAuthorId(id);
         if(author==null)
             throw new Exception("User not found");
-        return commentRepository.findByAuthorId(id).stream().map(CommentConverter::converter).collect(Collectors.toList());
+        return commentRepository.findByAuthorIdOrderByCreatedAtDesc(id).stream().map(CommentConverter::converter).collect(Collectors.toList());
     }
 }

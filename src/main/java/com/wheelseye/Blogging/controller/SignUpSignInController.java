@@ -18,10 +18,10 @@ public class SignUpSignInController {
     private AuthorService authorService;
 
     @PostMapping("/signup")       //when author signups then this method will be called.
-    private AuthorDTO create(@RequestBody SignUp request){ return authorService.create(request); }
+    public AuthorDTO create(@RequestBody SignUp request) throws Exception { return authorService.create(request); }
 
-    @GetMapping("/login")      //When user will login.
-    private AuthorDTO login(@RequestBody Login request) throws Exception {
+    @PostMapping("/login")      //When user will login.
+    public AuthorDTO login(@RequestBody Login request) throws Exception {
         return authorService.login(request);
     }
 }

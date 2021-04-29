@@ -12,4 +12,5 @@ public class AuthorDTO {
     private String name;
     private String dept;
     private String email;
+    private Integer authorId;
 }

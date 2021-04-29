@@ -16,10 +16,10 @@ public interface VlogRepository extends JpaRepository<Vlog, Integer> {
     //Page<VlogDTO> findAll(Pageable pageable);
 
     @Query("select v FROM Vlog v order by v.likes DESC")
-    List<Vlog> findAllOrderByVlogLikeDsc();
+    Page<Vlog> findAllOrderByVlogLikeDsc(Pageable pageable);
 
     Vlog findByVlogId(Integer vlogId);
 
-    List<Vlog> findByAuthorId(Integer id);
+    List<Vlog> findByAuthorIdOrderByCreatedAtDesc(Integer id);
 }
 

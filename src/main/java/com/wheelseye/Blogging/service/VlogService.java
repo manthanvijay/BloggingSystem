@@ -5,12 +5,16 @@ import com.wheelseye.Blogging.Entity.Vlog;
 import com.wheelseye.Blogging.converter.CommentConverter;
 import com.wheelseye.Blogging.converter.VlogConverter;
 import com.wheelseye.Blogging.dto.CommentDTO;
+import com.wheelseye.Blogging.dto.PageDTO;
 import com.wheelseye.Blogging.dto.VlogDTO;
 import com.wheelseye.Blogging.repo.AuthorRepository;
 import com.wheelseye.Blogging.repo.CommentRepository;
 import com.wheelseye.Blogging.repo.VlogRepository;
 import com.wheelseye.Blogging.request.CreateVlog;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -35,15 +39,13 @@ public class VlogService {
     @Autowired
     private EntityManager entityManager;
 
-    //public Page<Vlog> getAllVlogs(){
-      //  Pageable sortedByLikesDesc = PageRequest.of(0,1);//, Sort.by("likes").descending());
-     //   Page<Vlog> result = vlogRepository.findAll(sortedByLikesDesc).stream().map(VlogConverter::converter).collect(Collectors.toList());
-    //    return result;
-    //}
-    public List<VlogDTO> getAllVlogs(){
-        //Pageable sortedByLikesDesc = (Pageable) PageRequest.of(0,10, Sort.by("likes").descending());
-        //Page<Vlog> result = vlogRepository.findAll((org.springframework.data.domain.Pageable) sortedByLikesDesc);
-        return vlogRepository.findAllOrderByVlogLikeDsc().stream().map(VlogConverter::converter).collect(Collectors.toList());
+    public PageDTO<VlogDTO> getAllVlogs(Integer pageNo,Integer pageSize){
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<Vlog> vlogs = vlogRepository.findAllOrderByVlogLikeDsc(pageable);
+
+        List<VlogDTO> dtos = vlogs.getContent().stream().map(VlogConverter::converter).collect(Collectors.toList());
+
+        return new PageDTO<VlogDTO>(pageable.getPageNumber(),pageable.getPageSize(),(Long) vlogs.getTotalElements(),dtos);
     }
 
     public VlogDTO createVlog(CreateVlog request) throws Exception {
@@ -77,7 +79,7 @@ public class VlogService {
         Vlog vlog = vlogRepository.findByVlogId(id);
         if(vlog==null)
             throw new Exception("Vlog not found");
-        return commentRepository.findByVlogId(id).stream().map(CommentConverter::converter).collect(Collectors.toList());
+        return commentRepository.findByVlogIdOrderByCreatedAtDesc(id).stream().map(CommentConverter::converter).collect(Collectors.toList());
     }
 
     public List<VlogDTO> findVlogByTags(List<String> searchTag) {
@@ -90,6 +92,11 @@ public class VlogService {
             ).setParameter(1, queryString);
             result.addAll(query.getResultList());
         });
+        //Native query means hibernate doesn't convert the query and it will as it is paste the query to DB
+        //JPA query is first converted to native query through hibernate and then it performs function on the DB.
+        //Entity manager is used to make a connection with your DB just like Repo.
+        //Query is used for creating a query.
+        //Set parameter is used to map the querystring with ?1
         return result.stream().distinct().map(VlogConverter::converter).collect(Collectors.toList());
     }
 
@@ -97,9 +104,7 @@ public class VlogService {
         Vlog vlog = vlogRepository.findByVlogId(id);
         if(vlog==null)
             throw new Exception("Vlog not found");
-        Integer temp=vlog.getLikes();
-        temp+=1;
-        vlog.setLikes(temp);
+        vlog.setLikes(vlog.getLikes()+1);
         return VlogConverter.converter(vlogRepository.save(vlog));
     }
 
@@ -107,9 +112,7 @@ public class VlogService {
         Vlog vlog = vlogRepository.findByVlogId(id);
         if(vlog==null)
             throw new Exception("Vlog not found");
-        Integer flag=vlog.getDislikes();
-        flag+=1;
-        vlog.setDislikes(flag);
+        vlog.setDislikes(vlog.getDislikes()+1);
         return VlogConverter.converter(vlogRepository.save(vlog));
     }
 }

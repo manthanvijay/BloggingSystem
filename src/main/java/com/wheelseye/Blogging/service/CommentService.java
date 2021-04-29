@@ -47,6 +47,7 @@ public class CommentService {
         comment.setAuthor(author);
         comment.setContent(request.getContent());
         comment.setVlog(vlog);
+        String name = author.getName();
         return CommentConverter.converter(commentRepository.save(comment));
     }
 
