@@ -1,24 +1,20 @@
 package com.wheelseye.Blogging.Entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
-
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "comments")
-@Getter @Setter
-public class Comment implements Serializable
-{
+@Table(name = "merge")
+@Data
+public class Merge implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "cmt_id", unique = true, nullable = false)
-    private Integer cmtId;
+    @Column(name = "id", unique = true, nullable = false)
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vlog_id")
@@ -34,9 +30,6 @@ public class Comment implements Serializable
     @Column(name ="author_id", insertable = false, updatable = false)
     private Integer authorId;
 
-    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "comment")
-    //private List<SubComment> subComments;
-
     @Column(name = "content")
     private String content;
 
@@ -49,4 +42,6 @@ public class Comment implements Serializable
     @Column(name ="created_at")
     private Date createdAt;
 
+    @Column(name = "parent_id")
+    private Integer parentId;
 }

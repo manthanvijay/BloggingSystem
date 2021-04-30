@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class CreateVlogRequest {
+public class CreateVlog {
     private String subj;
     private String content;
     private List<String> tags;

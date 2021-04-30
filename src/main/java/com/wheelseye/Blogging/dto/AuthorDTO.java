@@ -2,6 +2,7 @@ package com.wheelseye.Blogging.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
 @Data
@@ -11,4 +12,5 @@ public class AuthorDTO {
     private String name;
     private String dept;
     private String email;
+    private Integer authorId;
 }
